@@ -11,6 +11,11 @@ This is the simplest buildable example. The example is used by the `idf.py creat
 
 ## Folder Structure
 
+## This project was created using the 'sample-project' example from ESP-IDF
+This is the simplest buildable example. The example is used by the `idf.py create-project` command, which copies the project template to path specified by the user with the desired folder name. For more information about project creation and examples in ESP-IDF, read [how to start a new project](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
+
+## Folder Structure
+
 The **sample_project** template initially contains one C source file [main.c](main/main.c). The file is located in the [main](main) folder and contains the program entry point (app_main()).
 
 ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
@@ -22,9 +27,9 @@ The project folder structure includes:
 ```
 ├── CMakeLists.txt
 ├── components
-│   ├── dht22
-│   ├── http_client
-│   └── wifi_setup
+│   ├── dht22
+│   ├── http_client
+│   └── wifi_setup
 ├── main
 │   ├── CMakeLists.txt
 │   └── main.c
@@ -39,3 +44,4 @@ They are not used or needed when building with CMake and idf.py.
 * [Get Started with ESP-IDF v4.3.1](https://docs.espressif.com/projects/esp-idf/en/v4.3.1/esp32/get-started/index.html)
 * [ESP HTTP Client - Rerence](https://docs.espressif.com/projects/esp-idf/en/v4.3.1/esp32/api-reference/protocols/esp_http_client.html)
 * [ESP-IDF on GitHub](https://github.com/espressif/esp-idf)
+W
