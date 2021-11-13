@@ -1,22 +1,18 @@
 #include "dht22.h"
 
-#define LOCAL_LOG_LEVEL ESP_LOG_VERBOSE
-
-#define MAX_DHT_DATA 5
-
 static const char* DHT_TAG = "DHT";
 
-int dhtGpio = 23;
+int dht_gpio = 23;
 float humidity = 0.;
 float temperature = 0.;
 
-void setDhtGpio( int gpio ) 
+void set_dht_gpio( gpio_num_t gpio_num ) 
 {
-    dhtGpio = gpio;
+    dht_gpio = gpio_num;
 }
 
-float getHumidity() { return humidity; }
-float getTemperature() { return temperature; }
+float get_humidity() { return humidity; }
+float get_temperature() { return temperature; }
 
 void dht_error_handler(int response)
 {
@@ -38,11 +34,48 @@ void dht_error_handler(int response)
 	}
 }
 
-int getSignalLevel( int usTimeOut, bool state )
+int sensor_json_data(char* data_buffer, size_t buff_len)
+{
+	char temperature_value[32];
+	int result = snprintf(temperature_value, sizeof temperature_value, "%.1f", get_temperature());
+
+	// Fail if the value was truncated or not converted correctly.
+	if (result < 0 || result >= sizeof temperature_value)
+    {
+        ESP_LOGE(DHT_TAG, "Failed to convert temperature value to string");
+        return DHT_DATA_FORMAT_ERROR;
+    }
+
+    char humidity_value[32];
+	result = snprintf(humidity_value, sizeof humidity_value, "%.1f", get_humidity());
+
+	// Fail if the value was truncated or not converted correctly.
+	if (result < 0 || result >= sizeof humidity_value)
+    {
+        ESP_LOGE(DHT_TAG, "Failed to convert humidity value to string");
+        return DHT_DATA_FORMAT_ERROR;
+    }
+    
+    strncpy(data_buffer, "{\"temperatura\": {\"value\": ", buff_len);
+    strcat(data_buffer, temperature_value);
+    // strcat(data_buffer, ", \"context\":{\"lat\":");
+    // strcat(data_buffer, DEVICE_LAT);
+    // strcat(data_buffer, ", \"lng\":");
+    // strcat(data_buffer, DEVICE_LNG);
+    strcat(data_buffer, "}, \"humedad\": {\"value\": ");
+    strcat(data_buffer, humidity_value);
+    strcat(data_buffer, "}}");
+
+	data_buffer[buff_len - 1] = '\0';
+
+	return DHT_OK;
+}
+
+int get_signal_level( int usTimeOut, bool state )
 {
 
 	int uSec = 0;
-	while( gpio_get_level(dhtGpio)==state ) 
+	while( gpio_get_level(dht_gpio)==state ) 
     {
 		if( uSec > usTimeOut ) 
 			return -1;
@@ -66,21 +99,21 @@ int read_dht()
 		dhtData[i] = 0;
     
     // Send start signal to sensor.
-	gpio_set_direction( dhtGpio, GPIO_MODE_OUTPUT );
+	gpio_set_direction( dht_gpio, GPIO_MODE_OUTPUT );
 
-	gpio_set_level( dhtGpio, 0 );
+	gpio_set_level( dht_gpio, 0 );
 	ets_delay_us( 3000 );			
 
-	gpio_set_level( dhtGpio, 1 );
+	gpio_set_level( dht_gpio, 1 );
 	ets_delay_us( 25 );
 
     // Get sensor response signal, low for 80us and then high for 80us.
-	gpio_set_direction( dhtGpio, GPIO_MODE_INPUT );	
+	gpio_set_direction( dht_gpio, GPIO_MODE_INPUT );	
   
-	uSec = getSignalLevel( 85, 0 );
+	uSec = get_signal_level( 85, 0 );
 	if (uSec < 0) return DHT_TIMEOUT_ERROR; 
 
-	uSec = getSignalLevel( 85, 1 );
+	uSec = get_signal_level( 85, 1 );
 	if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
     // If initial communication with sensor was successful, 
@@ -88,10 +121,10 @@ int read_dht()
 	for (int i = 0; i < 40; i++ ) 
     {
         // Start new transmission by sending 50us signal in low.
-		uSec = getSignalLevel( 56, 0 );
+		uSec = get_signal_level( 56, 0 );
 		if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
-		uSec = getSignalLevel( 75, 1 );
+		uSec = get_signal_level( 75, 1 );
 		if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
 		// add the current read to the output data
