@@ -1,6 +1,6 @@
 # Temperatura y Humedad IoT con ESP32
 
-> Trabajo en progreso
+> Trabajo en progreso. Revisa el estado del projecto [aquí](https://github.com/Frozen-Burrito/iot-esp-temperature-sensor/projects/1)
 
 Este proyecto puede ser usado para recolectar datos de temperatura y humedad usando el sensor DHT22, conectato a un módulo ESP32 con conexión a un Punto de Acceso WiFi. El ESP32 envía los valores a la [API de Datos de Ubidots](https://docs.ubidots.com/v1.6/reference/welcome) a través de HTTP usando una petición POST.
 
