@@ -11,8 +11,34 @@
 
 static const char* LOG_TAG = "HTTP";
 
+/**
+ * @brief Event handler for the http client.
+ * 
+ * @param event HTTP Event.
+ */ 
 esp_err_t _http_event_handler(esp_http_client_event_t* event);
 
+/**
+ * @brief Creates an HTTP client and performs a POST request. 
+ * 
+ * Initializes an HTTP client using [url],  _http_event_handler, a local
+ * response buffer and a maximum retry count as configuration. 
+ * 
+ * Then, it builds a POST request with "Content-Type": "application/json",  
+ * the authorization_token and the request_body. 
+ * 
+ * Finally, it performs (sends) the request and logs its status. 
+ *  
+ * Always cleans up the client after the request is sent, regardless of response
+ * status code.
+ * 
+ * @param url target URL for the request.
+ * @param auth_token authorization header for the request. (Sent in X-Auth-Token header).
+ * @param request_body JSON string to be sent along the request.
+ * 
+ * @returns ESP_OK: request sent successfully.
+ *          ESP_FAIL: client failed to initialize or request failed.
+ */ 
 static esp_err_t http_post_request(const char* url, const char* auth_token, const char* request_body)
 {
     char local_response_buffer[MAX_HTTP_OUTPUT_BUFFER] = {0};

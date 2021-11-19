@@ -61,7 +61,7 @@ float get_humidity();
 float get_temperature();
 
 /**
- * @brief Get the current sensor values and serialize them to JSON
+ * @brief Get the current sensor values and serialize them to JSON.
  * 
  * The JSON string follows the format described in 
  * the Ubidots Data API Reference.
@@ -69,11 +69,11 @@ float get_temperature();
  * The last char element of the resulting buffer will be a null 
  * termination character.
  * 
- * @param char*: data_buffer for JSON string
- * @param size_t: length of the buffer
+ * @param char*: data_buffer for output JSON string.
+ * @param size_t: length of the buffer.
  */
 int sensor_json_data(char* data_buffer, size_t buff_len);
 
-int get_signal_level( int usTimeout, bool state );
+int _get_signal_level( int usTimeout, bool state );
 
 #endif

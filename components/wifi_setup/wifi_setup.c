@@ -5,6 +5,7 @@ static const char* WIFI_TAG = "WiFi Setup";
 // FreeRTOS event group to signal wifi driver status.
 static EventGroupHandle_t s_wifi_event_group;
 
+// Number of times the WiFi driver has failed to connect.
 static int s_retry_count = 0;
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base,

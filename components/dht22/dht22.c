@@ -58,10 +58,6 @@ int sensor_json_data(char* data_buffer, size_t buff_len)
     
     strncpy(data_buffer, "{\"temperatura\": {\"value\": ", buff_len);
     strcat(data_buffer, temperature_value);
-    // strcat(data_buffer, ", \"context\":{\"lat\":");
-    // strcat(data_buffer, DEVICE_LAT);
-    // strcat(data_buffer, ", \"lng\":");
-    // strcat(data_buffer, DEVICE_LNG);
     strcat(data_buffer, "}, \"humedad\": {\"value\": ");
     strcat(data_buffer, humidity_value);
     strcat(data_buffer, "}}");
@@ -71,7 +67,7 @@ int sensor_json_data(char* data_buffer, size_t buff_len)
 	return DHT_OK;
 }
 
-int get_signal_level( int usTimeOut, bool state )
+int _get_signal_level( int usTimeOut, bool state )
 {
 
 	int uSec = 0;
@@ -110,10 +106,10 @@ int read_dht()
     // Get sensor response signal, low for 80us and then high for 80us.
 	gpio_set_direction( dht_gpio, GPIO_MODE_INPUT );	
   
-	uSec = get_signal_level( 85, 0 );
+	uSec = _get_signal_level( 85, 0 );
 	if (uSec < 0) return DHT_TIMEOUT_ERROR; 
 
-	uSec = get_signal_level( 85, 1 );
+	uSec = _get_signal_level( 85, 1 );
 	if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
     // If initial communication with sensor was successful, 
@@ -121,10 +117,10 @@ int read_dht()
 	for (int i = 0; i < 40; i++ ) 
     {
         // Start new transmission by sending 50us signal in low.
-		uSec = get_signal_level( 56, 0 );
+		uSec = _get_signal_level( 56, 0 );
 		if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
-		uSec = get_signal_level( 75, 1 );
+		uSec = _get_signal_level( 75, 1 );
 		if (uSec < 0) return DHT_TIMEOUT_ERROR;
 
 		// add the current read to the output data
