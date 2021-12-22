@@ -12,8 +12,8 @@
 #define WIFI_SETUP_H_
 
 // WiFi driver configuration.
-#define WIFI_SSID "TP-Link_B28D"
-#define WIFI_PSWD "1234567890"
+#define WIFI_SSID "wifi-ap-ssid"
+#define WIFI_PSWD "wifi-ap-password"
 #define WIFI_MAX_RETRY 3
 
 // Bits for FreeRTOS event group.

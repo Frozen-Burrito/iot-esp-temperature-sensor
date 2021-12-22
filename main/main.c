@@ -7,17 +7,21 @@
 #include "wifi_setup.h"
 #include "dht22.h"
 #include "http_client.h"
+#include "mqtt_app_client.h"
 
 #define DHT_GPIO GPIO_NUM_22
 
 // Ubidots api endpoint and token. Replace 'my-esp32' with 
 // your device label.
 #define API_URL "https://industrial.ubidots.com/api/v1.6/devices/my-esp32"
-#define UBIDOTS_TOKEN "your-ubidots-token"
+#define BROKER_URL "mqtt://industrial.api.ubidots.com"
+#define UBIDOTS_TOKEN "ubidots-api-token"
 
 void sensor_task(void* pvParameter)
 {
     set_dht_gpio(DHT_GPIO);
+
+    mqtt_client_init(BROKER_URL, UBIDOTS_TOKEN);
 
     while (1)
     {
@@ -37,7 +41,9 @@ void sensor_task(void* pvParameter)
         dht_error_handler(result);
 
         // Make POST request to Ubidots Data API
-        ESP_ERROR_CHECK(http_post_request(API_URL, UBIDOTS_TOKEN, json_str_buffer));
+        // ESP_ERROR_CHECK(http_post_request(API_URL, UBIDOTS_TOKEN, json_str_buffer));
+
+        mqtt_publish_msg("/v1.6/devices/my-esp32", json_str_buffer, 1);
         
         // Delay between reads must be of at least 2 seconds.
         vTaskDelay(5000 / portTICK_RATE_MS);
